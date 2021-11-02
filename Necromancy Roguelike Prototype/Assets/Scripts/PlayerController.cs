@@ -34,5 +34,8 @@ public class PlayerController : MonoBehaviour
             sprite.flipX = false;
         else if (hori < 0 && !sprite.flipX)
             sprite.flipX = true;
+
+        // Move Camera on top of player
+        Camera.main.transform.position = new Vector3(transform.position.x, transform.position.y, Camera.main.transform.position.z);
     }
 }
