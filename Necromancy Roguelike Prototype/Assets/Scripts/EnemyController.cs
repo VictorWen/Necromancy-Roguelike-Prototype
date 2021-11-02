@@ -14,8 +14,8 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private float movementSpeed = 2;
     [SerializeField] private float rotatingSpeed = 5;
 
-    private float shootingSpeed = 2;
-    private float projectileSpeed = 10;
+    [SerializeField] private float shootingSpeed = 2;
+    [SerializeField] private float projectileSpeed = 10;
     private float shootingCounter = 0;
 
     // Update is called once per frame
