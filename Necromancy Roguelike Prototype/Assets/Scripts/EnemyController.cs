@@ -8,11 +8,12 @@ public class EnemyController : MonoBehaviour
 
     [SerializeField] private ProjectileController projectilePrefab;
     [SerializeField] private PlayerController player;
-    
+
     [SerializeField] private int health = 10;
     [SerializeField] private float direction = 0;
     [SerializeField] private float movementSpeed = 2;
     [SerializeField] private float rotatingSpeed = 5;
+    [SerializeField] private float followingDistance = 1;
 
     [SerializeField] private float shootingSpeed = 2;
     [SerializeField] private float projectileSpeed = 10;
@@ -21,18 +22,25 @@ public class EnemyController : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
-        transform.position = transform.position + movementSpeed * (new Vector3(Mathf.Cos(direction), Mathf.Sin(direction))) * Time.deltaTime;
-        Vector3 playerPosition = player.transform.position;
-        float target_direction = Mathf.Atan2(playerPosition.y - transform.position.y, playerPosition.x - transform.position.x);
-        direction = target_direction;
-
-        shootingCounter += Time.deltaTime;
-        if (shootingCounter >= shootingSpeed)
+        if (player != null)
         {
-            shootingCounter -= shootingSpeed;
-            ProjectileController proj = Instantiate(projectilePrefab);
-            proj.Initialize(direction, projectileSpeed);
-            proj.transform.position = transform.position;
+            Vector3 playerPosition = player.transform.position;
+            if (Vector3.Distance(transform.position, playerPosition) >= followingDistance)
+            {
+                transform.position = transform.position + movementSpeed * (new Vector3(Mathf.Cos(direction), Mathf.Sin(direction))) * Time.deltaTime;
+            }
+
+            float target_direction = Mathf.Atan2(playerPosition.y - transform.position.y, playerPosition.x - transform.position.x);
+            direction = target_direction;
+
+            shootingCounter += Time.deltaTime;
+            if (shootingCounter >= shootingSpeed)
+            {
+                shootingCounter -= shootingSpeed;
+                ProjectileController proj = Instantiate(projectilePrefab);
+                proj.Initialize(direction, projectileSpeed);
+                proj.transform.position = transform.position;
+            }
         }
     }
 }
