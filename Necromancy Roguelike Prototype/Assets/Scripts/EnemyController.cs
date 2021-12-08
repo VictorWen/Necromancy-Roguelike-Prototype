@@ -4,12 +4,10 @@ using UnityEngine;
 
 public class EnemyController : MonoBehaviour
 {
-    public int Health { get { return health; } }
-
     [SerializeField] private ProjectileController projectilePrefab;
     [SerializeField] private PlayerController player;
+    [SerializeField] private GameObject soulPickup;
 
-    [SerializeField] private int health = 10;
     [SerializeField] private float direction = 0;
     [SerializeField] private float movementSpeed = 2;
     [SerializeField] private float rotatingSpeed = 5;
@@ -19,7 +17,12 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private float projectileSpeed = 10;
     private float shootingCounter = 0;
 
-    // Update is called once per frame
+    private void Start()
+    {
+        HealthScript health = GetComponent<HealthScript>();
+        health.OnDeath += SpawnSoulDrop;
+    }
+
     private void Update()
     {
         if (player != null)
@@ -42,5 +45,11 @@ public class EnemyController : MonoBehaviour
                 proj.transform.position = transform.position;
             }
         }
+    }
+
+    private void SpawnSoulDrop()
+    {
+        GameObject soul = Instantiate(soulPickup);
+        soul.transform.position = transform.position;
     }
 }

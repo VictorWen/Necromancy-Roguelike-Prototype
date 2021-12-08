@@ -1,17 +1,22 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
+using UnityEngine.UI;
+
 
 public class PlayerController : MonoBehaviour
 {
-    public int Health { get { return health; } }
-
-    [SerializeReference] private int health = 10;
-    [SerializeReference] private float movementSpeed = 5;
+    [SerializeField] private float movementSpeed = 5;
     [SerializeReference] private ProjectileController playerProjectile;
-    [SerializeReference] private float bulletSpeed = 10;
+    [SerializeField] private float bulletSpeed = 10;
+    [SerializeField] private float soulPower = 0;
+    [SerializeReference] private Text HUDText;
 
     private SpriteRenderer sprite;
+
+    public void AddSoulPower(float soulPower)
+    {
+        this.soulPower += soulPower;
+    }
 
     private void Start()
     {
@@ -20,6 +25,8 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        UpdateSoulPowerText();
+
         float hori = Input.GetAxisRaw("Horizontal");
         float vert = Input.GetAxisRaw("Vertical");
         
@@ -48,5 +55,10 @@ public class PlayerController : MonoBehaviour
             bullet.transform.position = transform.position;
             bullet.Initialize(direction, bulletSpeed, true);
         }
+    }
+    
+    private void UpdateSoulPowerText()
+    {
+        HUDText.text = String.Format("<color=cyan>Soul Power: {0:d}</color>", (int) soulPower);
     }
 }

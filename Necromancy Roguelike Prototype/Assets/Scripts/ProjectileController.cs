@@ -10,8 +10,6 @@ public class ProjectileController : MonoBehaviour
     private float lifeCounter = 0;
     [SerializeField] private float lifespan = 10;
 
-
-
     public bool IsPlayerProjectile { get { return playerProjectile; } }
 
     public void Initialize(float direction, float speed, bool playerProjectile=false)
@@ -30,7 +28,7 @@ public class ProjectileController : MonoBehaviour
         if (hit.collider != null)
         {
             print(hit.collider);
-            Health health = hit.collider.GetComponent<Health>();
+            HealthScript health = hit.collider.GetComponent<HealthScript>();
             if (health != null && health.IsPlayerHealth != IsPlayerProjectile)
             {
                 health.Damage(1);

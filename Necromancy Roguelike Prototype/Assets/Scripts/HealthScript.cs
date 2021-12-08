@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Health : MonoBehaviour
+public class HealthScript : MonoBehaviour
 {
     // Script for dealing with health and damage
     [SerializeField] private int health;
