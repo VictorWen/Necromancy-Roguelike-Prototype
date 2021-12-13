@@ -91,7 +91,7 @@ public class MinionController : MonoBehaviour
                 HealthScript health = target.GetComponent<HealthScript>();
                 if (health != null)
                 {
-                    health.Damage(1);
+                    health.Damage(1, DamageInfo.CreateMinionDamageInfo());
                     cooldownTimer = attackCooldown;
                 }
             }

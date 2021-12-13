@@ -47,9 +47,9 @@ public class EnemyController : MonoBehaviour
         }
     }
 
-    private void SpawnSoulDrop(bool isPlayer)
+    private void SpawnSoulDrop(DamageInfo info)
     {
-        if (isPlayer)
+        if (info.isPlayerDealtDamage)
         {
             GameObject soul = Instantiate(soulPickup);
             soul.transform.position = transform.position;
