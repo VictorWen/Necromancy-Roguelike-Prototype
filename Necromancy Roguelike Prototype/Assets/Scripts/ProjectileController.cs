@@ -23,15 +23,18 @@ public class ProjectileController : MonoBehaviour
     {
         Vector3 lastPosition = transform.position;
         transform.position += speed * Time.deltaTime * new Vector3(Mathf.Cos(direction), Mathf.Sin(direction));
-        RaycastHit2D hit = Physics2D.Raycast(lastPosition, transform.position);
-        
-        if (hit.collider != null)
+        RaycastHit2D[] hits = Physics2D.RaycastAll(lastPosition, transform.position);
+
+        foreach (RaycastHit2D hit in hits)
         {
-            HealthScript health = hit.collider.GetComponent<HealthScript>();
-            if (health != null && health.IsPlayerHealth != IsPlayerProjectile)
+            if (hit.collider != null)
             {
-                health.Damage(1);
-                Destroy(gameObject);
+                HealthScript health = hit.collider.GetComponent<HealthScript>();
+                if (health != null && health.IsPlayerHealth != IsPlayerProjectile)
+                {
+                    health.Damage(1, IsPlayerProjectile);
+                    Destroy(gameObject);
+                }
             }
         }
         lifeCounter += Time.deltaTime;

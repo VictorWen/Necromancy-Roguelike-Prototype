@@ -12,7 +12,7 @@ public class HealthScript : MonoBehaviour
 
     public bool IsPlayerHealth { get { return playerHealth; } }
 
-    public event Action OnDeath;
+    public event Action<bool> OnDeath;
 
     public void Initialize(int maxHealth)
     {
@@ -20,14 +20,14 @@ public class HealthScript : MonoBehaviour
         this.health = maxHealth;
     }
 
-    public void Damage(int damage)
+    public void Damage(int damage, bool isPlayer=false)
     {
         if (damage < 0)
             return;
         health -= damage;
         if (health <= 0)
         {
-            OnDeath?.Invoke();
+            OnDeath?.Invoke(isPlayer);
             Destroy(gameObject);
         }
     }
