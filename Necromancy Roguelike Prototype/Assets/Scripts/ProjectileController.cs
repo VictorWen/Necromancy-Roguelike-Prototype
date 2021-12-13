@@ -27,7 +27,6 @@ public class ProjectileController : MonoBehaviour
         
         if (hit.collider != null)
         {
-            print(hit.collider);
             HealthScript health = hit.collider.GetComponent<HealthScript>();
             if (health != null && health.IsPlayerHealth != IsPlayerProjectile)
             {
