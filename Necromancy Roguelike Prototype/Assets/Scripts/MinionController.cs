@@ -7,14 +7,14 @@ public class MinionController : MonoBehaviour
     [SerializeField] private PlayerController player;
     [SerializeField] private float followDistance = 1;
     [SerializeField] private float returnDistance = 4;
-    [SerializeField] private float movementSpeed = 3;
+    [SerializeField] private float acceleration = 3;
     [SerializeField] private float attackCooldown = 2;
-
-    [SerializeField] private Vector3 velocity = new Vector3();
 
     private MinionAIState state = MinionAIState.RETURN;
     private EnemyController target;
     private float cooldownTimer = 0;
+
+    private Rigidbody2D rigidBody;
 
     private enum MinionAIState
     {
@@ -32,6 +32,8 @@ public class MinionController : MonoBehaviour
     {
         HealthScript health = GetComponent<HealthScript>();
         health.OnDeath += (DamageInfo info) => player.RemoveMinion();
+
+        rigidBody = GetComponent<Rigidbody2D>();
     }
 
     private void Update()
@@ -51,7 +53,6 @@ public class MinionController : MonoBehaviour
 
         if (cooldownTimer > 0)
             cooldownTimer = Mathf.Max(0, cooldownTimer - Time.deltaTime);
-        transform.position += velocity * Time.deltaTime;
     }
 
     private void Follow()
@@ -59,10 +60,9 @@ public class MinionController : MonoBehaviour
         Vector3 direction = player.transform.position - transform.position;
         if (direction.magnitude > followDistance)
         {
-            velocity = direction.normalized * movementSpeed;
+            rigidBody.AddForce(direction.normalized * acceleration * rigidBody.mass, ForceMode2D.Impulse);
             return;
         }
-        velocity = new Vector3(0, 0, 0);
 
         if (target != null && Vector3.Distance(target.transform.position, player.transform.position) <= returnDistance)
         {
@@ -80,7 +80,7 @@ public class MinionController : MonoBehaviour
             return;
         }
 
-        velocity = direction.normalized * movementSpeed;
+        rigidBody.AddForce(direction.normalized * acceleration * rigidBody.mass, ForceMode2D.Impulse);
     }
 
     private void Target()
@@ -93,10 +93,9 @@ public class MinionController : MonoBehaviour
 
         Vector3 direction = target.transform.position - transform.position;
         if (direction.magnitude > 0.25)
-            velocity = direction.normalized * movementSpeed;
+            rigidBody.AddForce(direction.normalized * acceleration * rigidBody.mass, ForceMode2D.Impulse);
         else
         {
-            velocity = new Vector3(0, 0, 0);
             if (cooldownTimer == 0)
             {
                 HealthScript health = target.GetComponent<HealthScript>();

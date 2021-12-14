@@ -10,6 +10,8 @@ public class HealthScript : MonoBehaviour
     [SerializeField] private int maxHealth;
     [SerializeField] private bool playerHealth;
 
+    public int Health { get { return health; } }
+
     public bool IsPlayerHealth { get { return playerHealth; } }
 
     public event Action<DamageInfo> OnDeath;

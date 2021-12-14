@@ -10,16 +10,19 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private MinionController minionPrefab;
 
     [SerializeField] private float direction = 0;
-    [SerializeField] private float movementSpeed = 2;
-    [SerializeField] private float rotatingSpeed = 5;
+    [SerializeField] private float acceleration = 2;
     [SerializeField] private float followingDistance = 1;
 
     [SerializeField] private float shootingSpeed = 2;
     [SerializeField] private float projectileSpeed = 10;
     private float shootingCounter = 0;
 
+    private Rigidbody2D rigidBody;
+
     private void Start()
     {
+        rigidBody = GetComponent<Rigidbody2D>();
+
         HealthScript health = GetComponent<HealthScript>();
         health.OnDeath += Death;
     }
@@ -31,7 +34,7 @@ public class EnemyController : MonoBehaviour
             Vector3 playerPosition = player.transform.position;
             if (Vector3.Distance(transform.position, playerPosition) >= followingDistance)
             {
-                transform.position = transform.position + movementSpeed * (new Vector3(Mathf.Cos(direction), Mathf.Sin(direction))) * Time.deltaTime;
+                rigidBody.AddForce(acceleration * (new Vector3(Mathf.Cos(direction), Mathf.Sin(direction))) * rigidBody.mass, ForceMode2D.Impulse);
             }
 
             float target_direction = Mathf.Atan2(playerPosition.y - transform.position.y, playerPosition.x - transform.position.x);

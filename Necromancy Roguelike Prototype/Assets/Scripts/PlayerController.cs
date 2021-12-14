@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private float movementSpeed = 5;
+    [SerializeField] private float acceleration = 5;
     [SerializeField] private ProjectileController playerProjectile;
     [SerializeField] private float bulletSpeed = 10;
     
@@ -21,7 +21,11 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Text soulPowerText;
     [SerializeField] private Text minionText;
     [SerializeField] private Text bulletText;
+    
+    private Text healthText;
+    private HealthScript health;
 
+    private Rigidbody2D rigidBody;
     private SpriteRenderer sprite;
     private float reloadTimer = 0;
 
@@ -47,7 +51,11 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
+        rigidBody = GetComponent<Rigidbody2D>();
         sprite = GetComponent<SpriteRenderer>();
+
+        healthText = GetComponentInChildren<Text>();
+        health = GetComponent<HealthScript>();
     }
 
     private void Update()
@@ -59,8 +67,7 @@ public class PlayerController : MonoBehaviour
         if (hori != 0 || vert != 0)
         {
             Vector3 direction = new Vector3(hori, vert);
-            direction /= Vector3.Distance(direction, new Vector3(0, 0));
-            transform.position += direction * movementSpeed * Time.deltaTime;
+            rigidBody.AddForce(direction.normalized * acceleration * rigidBody.mass, ForceMode2D.Impulse);
         }
 
         // Flip sprite on direction change
@@ -89,6 +96,7 @@ public class PlayerController : MonoBehaviour
         }
         ReloadTimerTick();
 
+        UpdateHealthText();
         UpdateSoulPowerText();
         UpdateMinionText();
         UpdateBulletText();
@@ -139,5 +147,10 @@ public class PlayerController : MonoBehaviour
             bulletText.text = string.Format("<b>Bullets:</b> {0:d}", bullets);
         else
             bulletText.text = string.Format("<b>Reloading...</b> {0:f}s", reloadTimer);
+    }
+
+    private void UpdateHealthText()
+    {
+        healthText.text = string.Format("<color=red>{0:d} HP</color>", health.Health);
     }
 }
