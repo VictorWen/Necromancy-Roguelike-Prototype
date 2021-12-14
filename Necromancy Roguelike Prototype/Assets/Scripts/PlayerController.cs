@@ -9,9 +9,14 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float bulletSpeed = 10;
     [SerializeField] private float soulPower = 0;
     [SerializeField] private float soulCost = 3;
-    [SerializeField] private Text HUDText;
+    [SerializeField] private int bullets = 6;
+    [SerializeField] private int maxBullets = 6;
+    [SerializeField] private float reloadTime = 1.5f;
+    [SerializeField] private Text soulPowerText;
+    [SerializeField] private Text bulletText;
 
     private SpriteRenderer sprite;
+    private float reloadTimer = 0;
 
     public void AddSoulPower(float soulPower)
     {
@@ -57,21 +62,55 @@ public class PlayerController : MonoBehaviour
             ShootBullet(3, DamageInfo.CreateSoulDamageInfo());
             soulPower -= soulCost;
         }
+
+        if (Input.GetKeyDown(KeyCode.R) && reloadTimer <= 0)
+        {
+            reloadTimer = reloadTime;
+        }
+        ReloadTimerTick();
+
+        UpdateBulletText();
     }
 
     private void ShootBullet(int damage, DamageInfo bulletDamageInfo)
     {
-        ProjectileController bullet = Instantiate(playerProjectile);
-        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        float direction = Mathf.Atan2(mousePosition.y - transform.position.y, mousePosition.x - transform.position.x);
-        bullet.transform.position = transform.position;
-        bullet.Initialize(direction, bulletSpeed, damage, bulletDamageInfo);
-        Color color = bulletDamageInfo.isRevivalDamage ? Color.cyan : Color.white;
-        bullet.SetColor(color);
+        if (bullets > 0)
+        {
+            bullets--;
+            ProjectileController bullet = Instantiate(playerProjectile);
+            Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            float direction = Mathf.Atan2(mousePosition.y - transform.position.y, mousePosition.x - transform.position.x);
+            bullet.transform.position = transform.position;
+            bullet.Initialize(direction, bulletSpeed, damage, bulletDamageInfo);
+            Color color = bulletDamageInfo.isRevivalDamage ? Color.cyan : Color.white;
+            bullet.SetColor(color);
+        }
+        else if (reloadTimer <= 0)
+        {
+            reloadTimer = reloadTime;
+        }
     }
-    
+
+    private void ReloadTimerTick()
+    {
+        if (reloadTimer > 0)
+        {
+            reloadTimer = Mathf.Max(reloadTimer - Time.deltaTime, 0);
+            if (reloadTimer <= 0)
+                bullets = maxBullets;
+        }   
+    }
+
     private void UpdateSoulPowerText()
     {
-        HUDText.text = string.Format("<color=cyan>Soul Power: {0:d}</color>", (int) soulPower);
+        soulPowerText.text = string.Format("<color=cyan>Soul Power: {0:d}</color>", (int) soulPower);
+    }
+
+    private void UpdateBulletText()
+    {
+        if (reloadTimer <= 0)
+            bulletText.text = string.Format("<b>Bullets:</b> {0:d}", bullets);
+        else
+            bulletText.text = string.Format("<b>Reloading...</b> {0:f}s", reloadTimer);
     }
 }
