@@ -7,6 +7,7 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private ProjectileController projectilePrefab;
     [SerializeField] private PlayerController player;
     [SerializeField] private GameObject soulPickup;
+    [SerializeField] private MinionController minionPrefab;
 
     [SerializeField] private float direction = 0;
     [SerializeField] private float movementSpeed = 2;
@@ -20,7 +21,7 @@ public class EnemyController : MonoBehaviour
     private void Start()
     {
         HealthScript health = GetComponent<HealthScript>();
-        health.OnDeath += SpawnSoulDrop;
+        health.OnDeath += Death;
     }
 
     private void Update()
@@ -47,12 +48,24 @@ public class EnemyController : MonoBehaviour
         }
     }
 
-    private void SpawnSoulDrop(DamageInfo info)
+    private void Death(DamageInfo info)
     {
         if (info.isPlayerDealtDamage)
         {
-            GameObject soul = Instantiate(soulPickup);
-            soul.transform.position = transform.position;
+            if (info.isRevivalDamage)
+            {
+                Debug.Log("TEST");
+                // Revive
+                MinionController minion = Instantiate(minionPrefab);
+                minion.transform.position = transform.position;
+                minion.Initialize(player);
+            }
+            else
+            {
+                // Drop Soul
+                GameObject soul = Instantiate(soulPickup);
+                soul.transform.position = transform.position;
+            }
         }
     }
 }

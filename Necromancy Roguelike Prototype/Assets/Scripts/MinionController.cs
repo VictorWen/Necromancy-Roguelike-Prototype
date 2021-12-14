@@ -23,6 +23,11 @@ public class MinionController : MonoBehaviour
         RETURN
     }
 
+    public void Initialize(PlayerController player)
+    {
+        this.player = player;
+    }
+
     private void Update()
     {
         switch (state)

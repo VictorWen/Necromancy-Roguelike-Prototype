@@ -33,4 +33,14 @@ public struct DamageInfo
             isPlayerFriendlyDamage = true
         };
     }
+
+    public static DamageInfo CreateSoulDamageInfo()
+    {
+        return new DamageInfo
+        {
+            isPlayerDealtDamage = true,
+            isPlayerFriendlyDamage = true,
+            isRevivalDamage = true,
+        };
+    }
 }

@@ -4,19 +4,39 @@ using UnityEngine;
 
 public class ProjectileController : MonoBehaviour
 {
+    public bool IsPlayerProjectile { get { return playerProjectile; } }
+
     private float direction;
     private float speed;
     private bool playerProjectile;
     private float lifeCounter = 0;
     [SerializeField] private float lifespan = 10;
 
-    public bool IsPlayerProjectile { get { return playerProjectile; } }
+    private int damage;
+    private DamageInfo damageInfo;
 
     public void Initialize(float direction, float speed, bool playerProjectile=false)
     {
         this.direction = direction;
         this.speed = speed;
         this.playerProjectile = playerProjectile;
+        this.damage = 1;
+        this.damageInfo = playerProjectile ? DamageInfo.CreatePlayerDamageInfo() : DamageInfo.CreateEnemyDamageInfo();
+    }
+
+    public void Initialize(float direction, float speed, int damage, DamageInfo damageInfo)
+    {
+        this.direction = direction;
+        this.speed = speed;
+        this.damage = damage;
+        this.playerProjectile = damageInfo.isPlayerFriendlyDamage;
+        this.damageInfo = damageInfo;
+    }
+
+    public void SetColor(Color color)
+    {
+        SpriteRenderer renderer = GetComponent<SpriteRenderer>();
+        renderer.color = color;
     }
 
     private void Update()
@@ -32,8 +52,9 @@ public class ProjectileController : MonoBehaviour
                 HealthScript health = hit.collider.GetComponent<HealthScript>();
                 if (health != null && health.IsPlayerHealth != IsPlayerProjectile)
                 {
-                    health.Damage(1, DamageInfo.CreatePlayerDamageInfo());
+                    health.Damage(damage, damageInfo);
                     Destroy(gameObject);
+                    break;
                 }
             }
         }

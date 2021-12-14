@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,10 +5,11 @@ using UnityEngine.UI;
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private float movementSpeed = 5;
-    [SerializeReference] private ProjectileController playerProjectile;
+    [SerializeField] private ProjectileController playerProjectile;
     [SerializeField] private float bulletSpeed = 10;
     [SerializeField] private float soulPower = 0;
-    [SerializeReference] private Text HUDText;
+    [SerializeField] private float soulCost = 3;
+    [SerializeField] private Text HUDText;
 
     private SpriteRenderer sprite;
 
@@ -49,16 +49,29 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
-            ProjectileController bullet = Instantiate(playerProjectile);
-            Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            float direction = Mathf.Atan2(mousePosition.y - transform.position.y, mousePosition.x - transform.position.x);
-            bullet.transform.position = transform.position;
-            bullet.Initialize(direction, bulletSpeed, true);
+            ShootBullet(1, DamageInfo.CreatePlayerDamageInfo());
         }
+
+        if (Input.GetMouseButtonDown(1) && soulPower >= soulCost)
+        {
+            ShootBullet(3, DamageInfo.CreateSoulDamageInfo());
+            soulPower -= soulCost;
+        }
+    }
+
+    private void ShootBullet(int damage, DamageInfo bulletDamageInfo)
+    {
+        ProjectileController bullet = Instantiate(playerProjectile);
+        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        float direction = Mathf.Atan2(mousePosition.y - transform.position.y, mousePosition.x - transform.position.x);
+        bullet.transform.position = transform.position;
+        bullet.Initialize(direction, bulletSpeed, damage, bulletDamageInfo);
+        Color color = bulletDamageInfo.isRevivalDamage ? Color.cyan : Color.white;
+        bullet.SetColor(color);
     }
     
     private void UpdateSoulPowerText()
     {
-        HUDText.text = String.Format("<color=cyan>Soul Power: {0:d}</color>", (int) soulPower);
+        HUDText.text = string.Format("<color=cyan>Soul Power: {0:d}</color>", (int) soulPower);
     }
 }
