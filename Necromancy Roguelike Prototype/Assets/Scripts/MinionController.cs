@@ -28,6 +28,12 @@ public class MinionController : MonoBehaviour
         this.player = player;
     }
 
+    private void Start()
+    {
+        HealthScript health = GetComponent<HealthScript>();
+        health.OnDeath += (DamageInfo info) => player.RemoveMinion();
+    }
+
     private void Update()
     {
         switch (state)

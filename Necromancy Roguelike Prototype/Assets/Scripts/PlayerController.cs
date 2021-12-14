@@ -7,12 +7,19 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float movementSpeed = 5;
     [SerializeField] private ProjectileController playerProjectile;
     [SerializeField] private float bulletSpeed = 10;
+    
     [SerializeField] private float soulPower = 0;
     [SerializeField] private float soulCost = 3;
+
+    [SerializeField] private int maxMinions = 2;
+    [SerializeField] private int currentMinions = 0;
+    
     [SerializeField] private int bullets = 6;
     [SerializeField] private int maxBullets = 6;
     [SerializeField] private float reloadTime = 1.5f;
+
     [SerializeField] private Text soulPowerText;
+    [SerializeField] private Text minionText;
     [SerializeField] private Text bulletText;
 
     private SpriteRenderer sprite;
@@ -23,6 +30,21 @@ public class PlayerController : MonoBehaviour
         this.soulPower += soulPower;
     }
 
+    public bool AddMinion()
+    {
+        if (currentMinions < maxMinions) 
+        {
+            currentMinions++;
+            return true;
+        } else
+            return false;
+    }
+
+    public void RemoveMinion()
+    {
+        currentMinions--;
+    }
+
     private void Start()
     {
         sprite = GetComponent<SpriteRenderer>();
@@ -30,8 +52,6 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        UpdateSoulPowerText();
-
         float hori = Input.GetAxisRaw("Horizontal");
         float vert = Input.GetAxisRaw("Vertical");
         
@@ -69,6 +89,8 @@ public class PlayerController : MonoBehaviour
         }
         ReloadTimerTick();
 
+        UpdateSoulPowerText();
+        UpdateMinionText();
         UpdateBulletText();
     }
 
@@ -104,6 +126,11 @@ public class PlayerController : MonoBehaviour
     private void UpdateSoulPowerText()
     {
         soulPowerText.text = string.Format("<color=cyan>Soul Power: {0:d}</color>", (int) soulPower);
+    }
+
+    private void UpdateMinionText()
+    {
+        minionText.text = string.Format("<b>Minions:</b> {0:d}/{1:d}", currentMinions, maxMinions);
     }
 
     private void UpdateBulletText()

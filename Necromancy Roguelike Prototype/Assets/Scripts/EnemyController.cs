@@ -52,15 +52,14 @@ public class EnemyController : MonoBehaviour
     {
         if (info.isPlayerDealtDamage)
         {
-            if (info.isRevivalDamage)
+            if (info.isRevivalDamage && player.AddMinion())
             {
-                Debug.Log("TEST");
                 // Revive
                 MinionController minion = Instantiate(minionPrefab);
                 minion.transform.position = transform.position;
                 minion.Initialize(player);
             }
-            else
+            else if (!info.isRevivalDamage)
             {
                 // Drop Soul
                 GameObject soul = Instantiate(soulPickup);
