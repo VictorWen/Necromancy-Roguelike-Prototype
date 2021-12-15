@@ -98,8 +98,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa3d82904e55aeb4e9059a4b3cbda49f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ledger: {fileID: 0}
   projectilePrefab: {fileID: 8918023546040738521, guid: eb02a8a6fecbfcf4aa8fd76fccc6472a, type: 3}
-  player: {fileID: 0}
   soulPickup: {fileID: 1550434480799521650, guid: 5527cb1f39957e94894edd6559ac8a57, type: 3}
   minionPrefab: {fileID: 165086185287948288, guid: 2cbc1f4c835622d4baa02ad4b67315a5, type: 3}
   direction: 0

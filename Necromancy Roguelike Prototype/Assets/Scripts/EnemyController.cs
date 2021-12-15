@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class EnemyController : MonoBehaviour
 {
+    [SerializeField] private EntityLedger ledger;
     [SerializeField] private ProjectileController projectilePrefab;
-    [SerializeField] private PlayerController player;
     [SerializeField] private GameObject soulPickup;
     [SerializeField] private MinionController minionPrefab;
 
@@ -25,13 +25,15 @@ public class EnemyController : MonoBehaviour
 
         HealthScript health = GetComponent<HealthScript>();
         health.OnDeath += Death;
+
+        ledger.AddEnemy(this);
     }
 
     private void Update()
     {
-        if (player != null)
+        if (ledger.Player != null)
         {
-            Vector3 playerPosition = player.transform.position;
+            Vector3 playerPosition = ledger.Player.transform.position;
             if (Vector3.Distance(transform.position, playerPosition) >= followingDistance)
             {
                 rigidBody.AddForce(acceleration * (new Vector3(Mathf.Cos(direction), Mathf.Sin(direction))) * rigidBody.mass, ForceMode2D.Impulse);
@@ -55,12 +57,12 @@ public class EnemyController : MonoBehaviour
     {
         if (info.isPlayerDealtDamage)
         {
-            if (info.isRevivalDamage && player.AddMinion())
+            if (info.isRevivalDamage && ledger.Player.AddMinion())
             {
                 // Revive
                 MinionController minion = Instantiate(minionPrefab);
                 minion.transform.position = transform.position;
-                minion.Initialize(player);
+                minion.Initialize(ledger);
             }
             else if (!info.isRevivalDamage)
             {
@@ -69,5 +71,6 @@ public class EnemyController : MonoBehaviour
                 soul.transform.position = transform.position;
             }
         }
+        ledger.RemoveEnemy(this);
     }
 }

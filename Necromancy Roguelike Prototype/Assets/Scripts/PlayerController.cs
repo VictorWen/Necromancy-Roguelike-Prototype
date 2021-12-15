@@ -18,6 +18,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private int maxBullets = 6;
     [SerializeField] private float reloadTime = 1.5f;
 
+    [SerializeField] private EntityLedger ledger;
+
     [SerializeField] private Text soulPowerText;
     [SerializeField] private Text minionText;
     [SerializeField] private Text bulletText;
@@ -56,6 +58,8 @@ public class PlayerController : MonoBehaviour
 
         healthText = GetComponentInChildren<Text>();
         health = GetComponent<HealthScript>();
+
+        ledger.Player = this;
     }
 
     private void Update()

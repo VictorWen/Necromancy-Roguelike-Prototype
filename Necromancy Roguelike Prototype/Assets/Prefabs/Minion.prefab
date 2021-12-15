@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 165086185287948289}
   - component: {fileID: 165086185287948294}
   - component: {fileID: 165086185287948288}
-  - component: {fileID: 165086185287948291}
   - component: {fileID: 165086185287948290}
   - component: {fileID: 606797761982387327}
   - component: {fileID: 7456879976755796123}
@@ -99,27 +98,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18688fbde5863fc4f8283ff05b3173d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 0}
+  ledger: {fileID: 0}
   followDistance: 1
   returnDistance: 4
+  targetDistance: 2
   acceleration: 3
   attackCooldown: 2
---- !u!58 &165086185287948291
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 165086185287948295}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  serializedVersion: 2
-  m_Radius: 2
 --- !u!114 &165086185287948290
 MonoBehaviour:
   m_ObjectHideFlags: 0

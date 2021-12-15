@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class MinionController : MonoBehaviour
 {
-    [SerializeField] private PlayerController player;
+    [SerializeField] private EntityLedger ledger;
     [SerializeField] private float followDistance = 1;
     [SerializeField] private float returnDistance = 4;
+    [SerializeField] private float targetDistance = 2;
     [SerializeField] private float acceleration = 3;
     [SerializeField] private float attackCooldown = 2;
 
@@ -23,21 +24,26 @@ public class MinionController : MonoBehaviour
         RETURN
     }
 
-    public void Initialize(PlayerController player)
+    public void Initialize(EntityLedger ledger)
     {
-        this.player = player;
+        this.ledger = ledger;
     }
 
     private void Start()
     {
         HealthScript health = GetComponent<HealthScript>();
-        health.OnDeath += (DamageInfo info) => player.RemoveMinion();
+        health.OnDeath += (DamageInfo info) => ledger.Player.RemoveMinion();
+        health.OnDeath += (DamageInfo info) => ledger.RemoveMinion(this);
 
         rigidBody = GetComponent<Rigidbody2D>();
+        
+        ledger.AddMinion(this);
     }
 
     private void Update()
     {
+        GetTarget();
+
         switch (state)
         {
             case MinionAIState.FOLLOW:
@@ -57,14 +63,14 @@ public class MinionController : MonoBehaviour
 
     private void Follow()
     {
-        Vector3 direction = player.transform.position - transform.position;
+        Vector3 direction = ledger.Player.transform.position - transform.position;
         if (direction.magnitude > followDistance)
         {
             rigidBody.AddForce(direction.normalized * acceleration * rigidBody.mass, ForceMode2D.Impulse);
             return;
         }
 
-        if (target != null && Vector3.Distance(target.transform.position, player.transform.position) <= returnDistance)
+        if (target != null && Vector3.Distance(target.transform.position, ledger.Player.transform.position) <= returnDistance)
         {
             state = MinionAIState.TARGET;
             return;
@@ -73,7 +79,7 @@ public class MinionController : MonoBehaviour
 
     private void Return()
     {
-        Vector3 direction = player.transform.position - transform.position;
+        Vector3 direction = ledger.Player.transform.position - transform.position;
         if (direction.magnitude <= followDistance)
         {
             state = MinionAIState.FOLLOW;
@@ -85,7 +91,7 @@ public class MinionController : MonoBehaviour
 
     private void Target()
     {
-        if (target == null || Vector3.Distance(player.transform.position, transform.position) > returnDistance)
+        if (target == null || Vector3.Distance(ledger.Player.transform.position, transform.position) > returnDistance)
         {
             state = MinionAIState.RETURN;
             return;
@@ -108,17 +114,21 @@ public class MinionController : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void GetTarget()
     {
-        EnemyController enemy = collision.gameObject.GetComponent<EnemyController>();
-        if (enemy != null)
-            target = enemy;
-    }
-
-    private void OnTriggerExit2D(Collider2D collision)
-    {
-        EnemyController enemy = collision.gameObject.GetComponent<EnemyController>();
-        if (enemy != null && target == enemy)
-            target = null;
+        EnemyController[] enemies = ledger.Enemies;
+        EnemyController closest = null;
+        float closetDistance = Mathf.Infinity;
+        foreach (EnemyController enemy in enemies)
+        {
+            float distance = Vector3.Distance(transform.position, enemy.transform.position);
+            float playerDistance = Vector3.Distance(enemy.transform.position, ledger.Player.transform.position);
+            if (distance <= 2 && playerDistance <= returnDistance && distance < closetDistance)
+            {
+                closest = enemy;
+                closetDistance = distance;
+            }
+        }
+        target = closest;
     }
 }
