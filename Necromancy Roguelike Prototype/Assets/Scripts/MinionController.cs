@@ -9,7 +9,7 @@ public class MinionController : MonoBehaviour
     [SerializeField] private float returnDistance = 4;
     [SerializeField] private float targetDistance = 2;
     [SerializeField] private float acceleration = 3;
-    [SerializeField] private float attackCooldown = 2;
+    [SerializeField] private float attackCooldown = 1.5f;
 
     private MinionAIState state = MinionAIState.RETURN;
     private EnemyController target;

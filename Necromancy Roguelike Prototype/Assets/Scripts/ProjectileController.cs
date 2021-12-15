@@ -49,23 +49,6 @@ public class ProjectileController : MonoBehaviour
 
     private void Update()
     {
-        //Vector3 lastPosition = transform.position;
-        //transform.position += speed * Time.deltaTime * new Vector3(Mathf.Cos(direction), Mathf.Sin(direction));
-        //RaycastHit2D[] hits = Physics2D.RaycastAll(lastPosition, transform.position);
-
-        //foreach (RaycastHit2D hit in hits)
-        //{
-        //    if (hit.collider != null)
-        //    {
-        //        HealthScript health = hit.collider.GetComponent<HealthScript>();
-        //        if (health != null && health.IsPlayerHealth != IsPlayerProjectile)
-        //        {
-        //            health.Damage(damage, damageInfo);
-        //            Destroy(gameObject);
-        //            break;
-        //        }
-        //    }
-        //}
         lifeCounter += Time.deltaTime;
         if (lifeCounter >= lifespan)
             Destroy(gameObject);

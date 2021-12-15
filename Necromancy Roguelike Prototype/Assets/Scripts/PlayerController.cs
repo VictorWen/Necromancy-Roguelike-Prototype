@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 
 public class PlayerController : MonoBehaviour
@@ -31,9 +32,25 @@ public class PlayerController : MonoBehaviour
     private SpriteRenderer sprite;
     private float reloadTimer = 0;
 
+    private List<BaseItem> items;
+
+    public float ReloadTimeModifier { get; set; } = 1f;
+
     public void AddSoulPower(float soulPower)
     {
         this.soulPower += soulPower;
+    }
+
+    public void AddItem(BaseItem item)
+    {
+        items.Add(item);
+        item.OnAdd(this);
+    }
+
+    public void RemoveItem(BaseItem item)
+    {
+        item.OnRemove(this);
+        items.Remove(item);
     }
 
     public bool AddMinion()
@@ -49,6 +66,11 @@ public class PlayerController : MonoBehaviour
     public void RemoveMinion()
     {
         currentMinions--;
+    }
+
+    private void Awake()
+    {
+        items = new List<BaseItem>();
     }
 
     private void Start()
@@ -96,7 +118,7 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.R) && reloadTimer <= 0)
         {
-            reloadTimer = reloadTime;
+            ReloadWeapon();
         }
         ReloadTimerTick();
 
@@ -121,7 +143,7 @@ public class PlayerController : MonoBehaviour
         }
         else if (reloadTimer <= 0)
         {
-            reloadTimer = reloadTime;
+            ReloadWeapon();
         }
     }
 
@@ -133,6 +155,11 @@ public class PlayerController : MonoBehaviour
             if (reloadTimer <= 0)
                 bullets = maxBullets;
         }   
+    }
+
+    private void ReloadWeapon()
+    {
+        reloadTimer = reloadTime * ReloadTimeModifier;
     }
 
     private void UpdateSoulPowerText()
