@@ -12,12 +12,21 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private float direction = 0;
     [SerializeField] private float acceleration = 2;
     [SerializeField] private float followingDistance = 1;
+    [SerializeField] private float targetingDistance = 5;
 
     [SerializeField] private float shootingSpeed = 2;
     [SerializeField] private float projectileSpeed = 10;
-    private float shootingCounter = 0;
+    private float shootingTimer = 0;
 
+    private AIState state;
     private Rigidbody2D rigidBody;
+
+    private enum AIState
+    {
+        IDLE,
+        FOLLOW,
+        TARGET,
+    }
 
     private void Start()
     {
@@ -34,21 +43,40 @@ public class EnemyController : MonoBehaviour
         if (ledger.Player != null)
         {
             Vector3 playerPosition = ledger.Player.transform.position;
-            if (Vector3.Distance(transform.position, playerPosition) >= followingDistance)
+            if (Vector3.Distance(playerPosition, transform.position) <= targetingDistance)
             {
-                rigidBody.AddForce(acceleration * (new Vector3(Mathf.Cos(direction), Mathf.Sin(direction))) * rigidBody.mass, ForceMode2D.Impulse);
+                if (state == AIState.IDLE)
+                {
+                    state = AIState.TARGET;
+                }
+                else if (state == AIState.FOLLOW)
+                {
+                    state = AIState.TARGET;
+                }
+            }
+            else if (state == AIState.TARGET)
+            {
+                state = AIState.FOLLOW;
             }
 
-            float target_direction = Mathf.Atan2(playerPosition.y - transform.position.y, playerPosition.x - transform.position.x);
-            direction = target_direction;
-
-            shootingCounter += Time.deltaTime;
-            if (shootingCounter >= shootingSpeed)
+            if ((state == AIState.FOLLOW || state == AIState.TARGET) && Vector3.Distance(transform.position, playerPosition) >= followingDistance)
             {
-                shootingCounter -= shootingSpeed;
-                ProjectileController proj = Instantiate(projectilePrefab);
-                proj.Initialize(direction, projectileSpeed);
-                proj.transform.position = transform.position;
+                rigidBody.AddForce(acceleration * (new Vector3(Mathf.Cos(direction), Mathf.Sin(direction))) * rigidBody.mass, ForceMode2D.Impulse);
+
+                float target_direction = Mathf.Atan2(playerPosition.y - transform.position.y, playerPosition.x - transform.position.x);
+                direction = target_direction;
+            }
+
+            if (state == AIState.TARGET)
+            {
+                shootingTimer += Time.deltaTime;
+                if (shootingTimer >= shootingSpeed)
+                {
+                    shootingTimer -= shootingSpeed;
+                    ProjectileController proj = Instantiate(projectilePrefab);
+                    proj.Initialize(direction, projectileSpeed);
+                    proj.transform.position = transform.position;
+                }
             }
         }
     }

@@ -11,9 +11,13 @@ public class MinionController : MonoBehaviour
     [SerializeField] private float acceleration = 3;
     [SerializeField] private float attackCooldown = 1.5f;
 
+    [SerializeField] private float lifespan = 15f;
+
     private MinionAIState state = MinionAIState.RETURN;
     private EnemyController target;
+
     private float cooldownTimer = 0;
+    private float lifetime = 0;
 
     private Rigidbody2D rigidBody;
 
@@ -59,6 +63,13 @@ public class MinionController : MonoBehaviour
 
         if (cooldownTimer > 0)
             cooldownTimer = Mathf.Max(0, cooldownTimer - Time.deltaTime);
+
+        // Lifespan mechanic
+        lifetime += Time.deltaTime;
+        if (lifetime >= lifespan)
+        {
+            GetComponent<HealthScript>().Damage(1000, DamageInfo.CreateEnemyDamageInfo());
+        }
     }
 
     private void Follow()
