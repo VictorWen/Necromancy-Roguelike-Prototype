@@ -59,7 +59,7 @@ public class ProjectileController : MonoBehaviour
         if (collider != null)
         {
             HealthScript health = collider.GetComponent<HealthScript>();
-            if (health != null && health.IsPlayerHealth != IsPlayerProjectile)
+            if (health != null && !health.IsInvulnerable && health.IsPlayerHealth != IsPlayerProjectile)
             {
                 health.Damage(damage, damageInfo);
                 Destroy(gameObject);

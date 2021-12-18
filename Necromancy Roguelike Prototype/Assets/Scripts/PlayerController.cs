@@ -19,6 +19,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private int maxBullets = 6;
     [SerializeField] private float reloadTime = 1.5f;
 
+    [SerializeField] private float dodgeTime = 0.75f;
+    [SerializeField] private float dodgeCooldown = 1.5f;
+    [SerializeField] private float dodgeForce = 4f;
+
     [SerializeField] private EntityLedger ledger;
 
     [SerializeField] private Text soulPowerText;
@@ -30,7 +34,9 @@ public class PlayerController : MonoBehaviour
 
     private Rigidbody2D rigidBody;
     private SpriteRenderer sprite;
+    
     private float reloadTimer = 0;
+    private float dodgeTimer = 0;
 
     private List<BaseItem> items;
 
@@ -71,6 +77,7 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         items = new List<BaseItem>();
+        dodgeTimer = dodgeCooldown;
     }
 
     private void Start()
@@ -114,6 +121,25 @@ public class PlayerController : MonoBehaviour
         {
             ShootBullet(3, DamageInfo.CreateSoulDamageInfo());
             soulPower -= soulCost;
+        }
+
+        dodgeTimer = Mathf.Max(-dodgeCooldown, dodgeTimer - Time.deltaTime);
+        if (Input.GetKeyDown(KeyCode.LeftShift) && dodgeTimer == -dodgeCooldown && (hori != 0 || vert != 0))
+        {
+            dodgeTimer = dodgeTime;
+            health.IsInvulnerable = true;
+            sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, 0.5f);
+            
+            if (hori != 0 || vert != 0)
+            {
+                Vector3 direction = new Vector3(hori, vert);
+                rigidBody.AddForce(dodgeForce * direction.normalized * acceleration * rigidBody.mass, ForceMode2D.Impulse);
+            }
+        }
+        if (health.IsInvulnerable && dodgeTimer <= 0)
+        {
+            health.IsInvulnerable = false;
+            sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, 1f);
         }
 
         if (Input.GetKeyDown(KeyCode.R) && reloadTimer <= 0)
