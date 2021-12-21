@@ -38,9 +38,9 @@ public class PlayerController : MonoBehaviour
     private float reloadTimer = 0;
     private float dodgeTimer = 0;
 
-    private List<BaseItem> items;
+    private Dictionary<string, BaseItem> items;
 
-    public float ReloadTimeModifier { get; set; } = 1f;
+    public AttributeCalculator Attributes { get; private set; }
 
     public void AddSoulPower(float soulPower)
     {
@@ -49,14 +49,29 @@ public class PlayerController : MonoBehaviour
 
     public void AddItem(BaseItem item)
     {
-        items.Add(item);
-        item.OnAdd(this);
+        if (items.ContainsKey(item.ID)) {
+            items[item.ID].Count += item.Count;
+        }
+        else
+        {
+            items.Add(item.ID, item);
+        }
+
+        items[item.ID].OnAdd(this);
     }
 
     public void RemoveItem(BaseItem item)
     {
-        item.OnRemove(this);
-        items.Remove(item);
+        if (items.ContainsKey(item.ID))
+        {
+            items[item.ID].Count -= item.Count;
+            if (items[item.ID].Count <= 0)
+            {
+                items.Remove(item.ID);
+            }
+
+            items[item.ID].OnRemove(this);
+        }
     }
 
     public bool AddMinion()
@@ -76,7 +91,8 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
-        items = new List<BaseItem>();
+        Attributes = new AttributeCalculator();
+        items = new Dictionary<string, BaseItem>();
         dodgeTimer = dodgeCooldown;
     }
 
@@ -185,7 +201,7 @@ public class PlayerController : MonoBehaviour
 
     private void ReloadWeapon()
     {
-        reloadTimer = reloadTime * ReloadTimeModifier;
+        reloadTimer = reloadTime * Attributes.GetAttribute(Attribute.RELOAD_TIME_MULTIPLIER);
     }
 
     private void UpdateSoulPowerText()
@@ -203,7 +219,7 @@ public class PlayerController : MonoBehaviour
         if (reloadTimer <= 0)
             bulletText.text = string.Format("<b>Bullets:</b> {0:d}", bullets);
         else
-            bulletText.text = string.Format("<b>Reloading...</b> {0:f}s", reloadTimer);
+            bulletText.text = string.Format("<b>Reloading...</b> {0:f1}s", reloadTimer);
     }
 
     private void UpdateHealthText()

@@ -134,7 +134,7 @@ public class MinionController : MonoBehaviour
         {
             float distance = Vector3.Distance(transform.position, enemy.transform.position);
             float playerDistance = Vector3.Distance(enemy.transform.position, ledger.Player.transform.position);
-            if (distance <= 2 && playerDistance <= returnDistance && distance < closetDistance)
+            if (distance <= targetDistance && playerDistance <= returnDistance && distance < closetDistance)
             {
                 closest = enemy;
                 closetDistance = distance;

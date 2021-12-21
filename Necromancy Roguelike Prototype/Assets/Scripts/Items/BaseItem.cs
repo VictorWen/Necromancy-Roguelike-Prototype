@@ -5,4 +5,6 @@ public abstract class BaseItem
     public abstract void OnAdd(PlayerController player);
 
     public abstract void OnRemove(PlayerController player);
+
+    public int Count { get; set; } = 1;
 }
