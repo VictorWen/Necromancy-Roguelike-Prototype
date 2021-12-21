@@ -25,9 +25,26 @@ public class AttributeCalculator
         }
     }
 
+    private readonly static Dictionary<Attribute, float> globalDefaultValues;
+
     private readonly Dictionary<Attribute, float> defaultValues;
     private readonly Dictionary<Attribute, HashSet<AttributeModifier>> attributeModifiers;
     private readonly Dictionary<string, List<AttributeModifier>> modifiers;
+
+    static AttributeCalculator()
+    {
+        globalDefaultValues = new Dictionary<Attribute, float>();
+
+        foreach (Attribute attribute in Enum.GetValues(typeof(Attribute)))
+        {
+            globalDefaultValues[attribute] = 0;
+        }
+
+        globalDefaultValues[Attribute.RELOAD_TIME_MULTIPLIER] = 1;
+
+        globalDefaultValues[Attribute.CRITICAL_CHANCE] = 0;
+        globalDefaultValues[Attribute.CRITICAL_MULTIPLIER] = 2;
+    }
 
     public AttributeCalculator()
     {
@@ -37,7 +54,7 @@ public class AttributeCalculator
 
         foreach (Attribute attribute in Enum.GetValues(typeof(Attribute)))
         {
-            defaultValues[attribute] = 1;
+            defaultValues[attribute] = globalDefaultValues[attribute];
             attributeModifiers.Add(attribute, new HashSet<AttributeModifier>());
         }
     }
