@@ -98,6 +98,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lifespan: 5
+  textParticlePrefab: {fileID: 8209711085823354000, guid: fb3e12e9e2c995549a1cbb9402cb3bae, type: 3}
 --- !u!58 &-4331811111111431527
 CircleCollider2D:
   m_ObjectHideFlags: 0

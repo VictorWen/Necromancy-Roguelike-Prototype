@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using static AttributeCalculator;
 
 public class BandolierItem : BaseItem
 {
@@ -21,9 +22,9 @@ public class BandolierItem : BaseItem
 
     private void UpdateModifier(PlayerController player)
     {
-        player.Attributes.SetModifier("bandolier", new List<AttributeCalculator.AttributeModifier>()
+        player.Attributes.SetModifier("bandolier", new List<AttributeModifier>()
         {
-            new AttributeCalculator.AttributeModifier(Attribute.RELOAD_TIME_MULTIPLIER, ModifierType.MULT, Mathf.Pow(0.5f, Count))
+            new AttributeModifier(Attribute.RELOAD_TIME_MULTIPLIER, ModifierType.MULT, Mathf.Pow(0.5f, Count))
         });
     }
 }

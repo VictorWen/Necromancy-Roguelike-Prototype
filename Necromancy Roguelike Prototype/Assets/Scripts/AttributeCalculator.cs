@@ -2,15 +2,16 @@
 using System;
 using UnityEngine;
 
-public enum ModifierType
-{
-    BASE,
-    ADD,
-    MULT
-}
 
 public class AttributeCalculator
 {
+    public enum ModifierType
+    {
+        BASE,
+        ADD,
+        MULT
+    }
+
     public struct AttributeModifier
     {
         public Attribute attribute;
@@ -25,7 +26,7 @@ public class AttributeCalculator
         }
     }
 
-    private readonly static Dictionary<Attribute, float> globalDefaultValues;
+    public static Dictionary<Attribute, float> GlobalDefaultValues { get; private set; }
 
     private readonly Dictionary<Attribute, float> defaultValues;
     private readonly Dictionary<Attribute, HashSet<AttributeModifier>> attributeModifiers;
@@ -33,17 +34,17 @@ public class AttributeCalculator
 
     static AttributeCalculator()
     {
-        globalDefaultValues = new Dictionary<Attribute, float>();
+        GlobalDefaultValues = new Dictionary<Attribute, float>();
 
         foreach (Attribute attribute in Enum.GetValues(typeof(Attribute)))
         {
-            globalDefaultValues[attribute] = 0;
+            GlobalDefaultValues[attribute] = 0;
         }
 
-        globalDefaultValues[Attribute.RELOAD_TIME_MULTIPLIER] = 1;
+        GlobalDefaultValues[Attribute.RELOAD_TIME_MULTIPLIER] = 1;
 
-        globalDefaultValues[Attribute.CRITICAL_CHANCE] = 0;
-        globalDefaultValues[Attribute.CRITICAL_MULTIPLIER] = 2;
+        GlobalDefaultValues[Attribute.CRITICAL_CHANCE] = 0.03f;
+        GlobalDefaultValues[Attribute.CRITICAL_MULTIPLIER] = 2;
     }
 
     public AttributeCalculator()
@@ -54,7 +55,20 @@ public class AttributeCalculator
 
         foreach (Attribute attribute in Enum.GetValues(typeof(Attribute)))
         {
-            defaultValues[attribute] = globalDefaultValues[attribute];
+            defaultValues[attribute] = GlobalDefaultValues[attribute];
+            attributeModifiers.Add(attribute, new HashSet<AttributeModifier>());
+        }
+    }
+
+    public AttributeCalculator(List<Attribute> attributes)
+    {
+        this.defaultValues = new Dictionary<Attribute, float>();
+        this.attributeModifiers = new Dictionary<Attribute, HashSet<AttributeModifier>>();
+        this.modifiers = new Dictionary<string, List<AttributeModifier>>();
+
+        foreach (Attribute attribute in attributes)
+        {
+            defaultValues[attribute] = GlobalDefaultValues[attribute];
             attributeModifiers.Add(attribute, new HashSet<AttributeModifier>());
         }
     }
