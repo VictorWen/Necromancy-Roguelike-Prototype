@@ -105,8 +105,9 @@ MonoBehaviour:
   direction: 0
   acceleration: 1
   followingDistance: 1
+  targetingDistance: 3
   shootingSpeed: 2
-  projectileSpeed: 4
+  projectileSpeed: 5
 --- !u!114 &5810035690109053621
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -122,6 +123,7 @@ MonoBehaviour:
   health: 6
   maxHealth: 6
   playerHealth: 0
+  isInvulnerable: 0
 --- !u!70 &5810035690109053626
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

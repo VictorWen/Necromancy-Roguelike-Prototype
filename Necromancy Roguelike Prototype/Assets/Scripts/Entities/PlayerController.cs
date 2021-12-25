@@ -34,6 +34,7 @@ public class PlayerController : MonoBehaviour
 
     private Rigidbody2D rigidBody;
     private SpriteRenderer sprite;
+    private AimCone aimCone;
     
     private float reloadTimer = 0;
     private float dodgeTimer = 0;
@@ -100,6 +101,7 @@ public class PlayerController : MonoBehaviour
     {
         rigidBody = GetComponent<Rigidbody2D>();
         sprite = GetComponent<SpriteRenderer>();
+        aimCone = GetComponent<AimCone>();
 
         healthText = GetComponentInChildren<Text>();
         health = GetComponent<HealthScript>();
@@ -128,35 +130,9 @@ public class PlayerController : MonoBehaviour
         // Move Camera on top of player
         Camera.main.transform.position = new Vector3(transform.position.x, transform.position.y, Camera.main.transform.position.z);
 
-        if (Input.GetMouseButtonDown(0))
-        {
-            ShootBullet(1, DamageInfo.CreatePlayerDamageInfo());
-        }
+        AimAndShootTick();
 
-        if (Input.GetMouseButtonDown(1) && soulPower >= soulCost)
-        {
-            ShootBullet(3, DamageInfo.CreateSoulDamageInfo());
-            soulPower -= soulCost;
-        }
-
-        dodgeTimer = Mathf.Max(-dodgeCooldown, dodgeTimer - Time.deltaTime);
-        if (Input.GetKeyDown(KeyCode.LeftShift) && dodgeTimer == -dodgeCooldown && (hori != 0 || vert != 0))
-        {
-            dodgeTimer = dodgeTime;
-            health.IsInvulnerable = true;
-            sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, 0.5f);
-            
-            if (hori != 0 || vert != 0)
-            {
-                Vector3 direction = new Vector3(hori, vert);
-                rigidBody.AddForce(dodgeForce * direction.normalized * acceleration * rigidBody.mass, ForceMode2D.Impulse);
-            }
-        }
-        if (health.IsInvulnerable && dodgeTimer <= 0)
-        {
-            health.IsInvulnerable = false;
-            sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, 1f);
-        }
+        DodgeTick(hori, vert);
 
         if (Input.GetKeyDown(KeyCode.R) && reloadTimer <= 0)
         {
@@ -170,23 +146,79 @@ public class PlayerController : MonoBehaviour
         UpdateBulletText();
     }
 
-    private void ShootBullet(int damage, DamageInfo bulletDamageInfo)
+    private void AimAndShootTick()
     {
-        if (bullets > 0)
+        if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1))
         {
-            bullets--;
-            ProjectileController bullet = Instantiate(playerProjectile);
-            Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            float direction = Mathf.Atan2(mousePosition.y - transform.position.y, mousePosition.x - transform.position.x);
-            bullet.transform.position = transform.position;
-            bullet.Initialize(direction, bulletSpeed, damage, bulletDamageInfo);
-            Color color = bulletDamageInfo.isRevivalDamage ? Color.cyan : Color.white;
-            bullet.SetColor(color);
+            if (bullets > 0)
+            {
+                if (Input.GetMouseButtonDown(0) || soulPower >= soulCost)
+                {
+                    aimCone.Show();
+                    aimCone.SetAngle(Mathf.PI / 4);
+                }
+            }
+            else if (reloadTimer <= 0)
+            {
+                ReloadWeapon();
+            }
         }
-        else if (reloadTimer <= 0)
+
+        if ((Input.GetMouseButton(0) || Input.GetMouseButton(1)) && aimCone.IsActive)
         {
-            ReloadWeapon();
+            if (aimCone.Angle > 0)
+                aimCone.SetAngle(Mathf.Max(0, aimCone.Angle - 0.5f * Time.deltaTime));
+
+            Vector3 mousePos = Input.mousePosition;
+            mousePos = Camera.main.ScreenToWorldPoint(mousePos);
+            aimCone.SetRotation(Mathf.Atan2(mousePos.y - transform.position.y, mousePos.x - transform.position.x));
         }
+
+        if (Input.GetMouseButtonUp(0) && aimCone.IsActive)
+        {
+            ShootBullet(aimCone.RandomAim(), 1, DamageInfo.CreatePlayerDamageInfo());
+
+            aimCone.Hide();
+        }
+        else if (Input.GetMouseButtonUp(1) && soulPower >= soulCost && aimCone.IsActive)
+        {
+            ShootBullet(aimCone.RandomAim(), 3, DamageInfo.CreateSoulDamageInfo());
+            soulPower -= soulCost;
+
+            aimCone.Hide();
+        }
+    }
+
+    private void DodgeTick(float hori, float vert)
+    {
+        dodgeTimer = Mathf.Max(-dodgeCooldown, dodgeTimer - Time.deltaTime);
+        if (Input.GetKeyDown(KeyCode.LeftShift) && dodgeTimer == -dodgeCooldown && (hori != 0 || vert != 0))
+        {
+            dodgeTimer = dodgeTime;
+            health.IsInvulnerable = true;
+            sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, 0.5f);
+
+            if (hori != 0 || vert != 0)
+            {
+                Vector3 direction = new Vector3(hori, vert);
+                rigidBody.AddForce(dodgeForce * direction.normalized * acceleration * rigidBody.mass, ForceMode2D.Impulse);
+            }
+        }
+        if (health.IsInvulnerable && dodgeTimer <= 0)
+        {
+            health.IsInvulnerable = false;
+            sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, 1f);
+        }
+    }
+
+    private void ShootBullet(float direction, int damage, DamageInfo bulletDamageInfo)
+    {
+        bullets--;
+        ProjectileController bullet = Instantiate(playerProjectile);
+        bullet.transform.position = transform.position;
+        bullet.Initialize(direction, bulletSpeed, damage, bulletDamageInfo);
+        Color color = bulletDamageInfo.isRevivalDamage ? Color.cyan : Color.white;
+        bullet.SetColor(color);
     }
 
     private void ReloadTimerTick()
