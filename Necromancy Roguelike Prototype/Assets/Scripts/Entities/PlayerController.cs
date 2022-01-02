@@ -109,7 +109,7 @@ public class PlayerController : MonoBehaviour
         ledger.Player = this;
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         float hori = Input.GetAxisRaw("Horizontal");
         float vert = Input.GetAxisRaw("Vertical");
@@ -167,7 +167,7 @@ public class PlayerController : MonoBehaviour
         if ((Input.GetMouseButton(0) || Input.GetMouseButton(1)) && aimCone.IsActive)
         {
             if (aimCone.Angle > 0)
-                aimCone.SetAngle(Mathf.Max(0, aimCone.Angle - 0.5f * Time.deltaTime));
+                aimCone.SetAngle(Mathf.Max(0, aimCone.Angle - 0.5f * Time.fixedDeltaTime));
 
             Vector3 mousePos = Input.mousePosition;
             mousePos = Camera.main.ScreenToWorldPoint(mousePos);
@@ -191,7 +191,7 @@ public class PlayerController : MonoBehaviour
 
     private void DodgeTick(float hori, float vert)
     {
-        dodgeTimer = Mathf.Max(-dodgeCooldown, dodgeTimer - Time.deltaTime);
+        dodgeTimer = Mathf.Max(-dodgeCooldown, dodgeTimer - Time.fixedDeltaTime);
         if (Input.GetKeyDown(KeyCode.LeftShift) && dodgeTimer == -dodgeCooldown && (hori != 0 || vert != 0))
         {
             dodgeTimer = dodgeTime;
@@ -225,7 +225,7 @@ public class PlayerController : MonoBehaviour
     {
         if (reloadTimer > 0)
         {
-            reloadTimer = Mathf.Max(reloadTimer - Time.deltaTime, 0);
+            reloadTimer = Mathf.Max(reloadTimer - Time.fixedDeltaTime, 0);
             if (reloadTimer <= 0)
                 bullets = maxBullets;
         }   

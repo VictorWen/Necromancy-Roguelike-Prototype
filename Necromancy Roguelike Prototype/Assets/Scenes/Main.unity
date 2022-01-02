@@ -872,7 +872,7 @@ MonoBehaviour:
   acceleration: 1.5
   playerProjectile: {fileID: 5780831032109621140, guid: 0d29d80898dc3ac46bf6c39271715429, type: 3}
   bulletSpeed: 10
-  soulPower: 100
+  soulPower: 0
   soulCost: 3
   maxMinions: 2
   currentMinions: 0
@@ -1494,5 +1494,13 @@ PrefabInstance:
       propertyPath: ledger
       value: 
       objectReference: {fileID: 1040531966}
+    - target: {fileID: 5810035690109053622, guid: 7a4ad114f46cc654ebf30673402a60ca, type: 3}
+      propertyPath: acceleration
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 5810035690109053622, guid: 7a4ad114f46cc654ebf30673402a60ca, type: 3}
+      propertyPath: projectileSpeed
+      value: 6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7a4ad114f46cc654ebf30673402a60ca, type: 3}
