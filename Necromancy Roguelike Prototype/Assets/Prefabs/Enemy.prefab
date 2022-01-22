@@ -101,12 +101,13 @@ MonoBehaviour:
   ledger: {fileID: 0}
   projectilePrefab: {fileID: 8918023546040738521, guid: eb02a8a6fecbfcf4aa8fd76fccc6472a, type: 3}
   soulPickup: {fileID: 1550434480799521650, guid: 5527cb1f39957e94894edd6559ac8a57, type: 3}
+  terrorPickup: {fileID: 3694362462017669225, guid: adeb09be065305141a4205ce171d621d, type: 3}
   minionPrefab: {fileID: 165086185287948288, guid: 2cbc1f4c835622d4baa02ad4b67315a5, type: 3}
   direction: 0
   acceleration: 0.75
   followingDistance: 1
   targetingDistance: 3
-  shootingSpeed: 0.75
+  shootingSpeed: 1
   projectileSpeed: 7
 --- !u!114 &5810035690109053621
 MonoBehaviour:

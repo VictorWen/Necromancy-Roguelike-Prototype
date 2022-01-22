@@ -14,7 +14,7 @@ public class MinionController : MonoBehaviour
 
     [SerializeField] private float lifespan = 15f;
 
-    private MinionAIState state = MinionAIState.RETURN;
+    private MinionAIState state = MinionAIState.FOLLOW;
     private EnemyController target;
 
     private float cooldownTimer = 0;

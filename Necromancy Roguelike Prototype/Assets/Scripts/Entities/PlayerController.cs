@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour
     
     [SerializeField] private float soulPower = 0;
     [SerializeField] private float soulCost = 3;
+    private int terror = 0;
 
     [SerializeField] private int maxMinions = 2;
     [SerializeField] private int currentMinions = 0;
@@ -47,6 +48,11 @@ public class PlayerController : MonoBehaviour
     public void AddSoulPower(float soulPower)
     {
         this.soulPower += soulPower;
+    }
+
+    public void AddTerror(int terror)
+    {
+        this.terror += terror;
     }
 
     public void AddItem(BaseItem item)
@@ -249,7 +255,7 @@ public class PlayerController : MonoBehaviour
 
     private void UpdateSoulPowerText()
     {
-        soulPowerText.text = string.Format("<color=cyan>Soul Power: {0:d}</color>", (int) soulPower);
+        soulPowerText.text = string.Format("<b><color=cyan>Soul Power: {0:d}</color> <color=purple>Terror: {1:d}</color></b>", (int) soulPower, terror);
     }
 
     private void UpdateMinionText()

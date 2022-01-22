@@ -19,6 +19,8 @@ public class ProjectileController : MonoBehaviour
 
     private Rigidbody2D rigidBody;
 
+    private bool contact = false;
+
     public bool IsPlayerProjectile { get { return playerProjectile; } }
 
     public void Initialize(float direction, float speed, bool playerProjectile=false)
@@ -65,7 +67,7 @@ public class ProjectileController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collider)
     {
-        if (collider != null)
+        if (collider != null && !contact)
         {
             HealthScript health = collider.GetComponent<HealthScript>();
             if (health != null && !health.IsInvulnerable && health.IsPlayerHealth != IsPlayerProjectile)
@@ -82,11 +84,13 @@ public class ProjectileController : MonoBehaviour
 
                 health.Damage(damage, damageInfo);
                 Destroy(gameObject);
+                contact = true;
                 return;
             }
             else if (collider.CompareTag("Projectile Wall"))
             {
                 Destroy(gameObject);
+                contact = true;
                 return;
             }
         }

@@ -102,10 +102,10 @@ MonoBehaviour:
   followDistance: 1
   returnDistance: 6
   targetDistance: 2
-  acceleration: 1
+  acceleration: 1.5
   attackCooldown: 1
-  attackDamage: 2
-  lifespan: 20
+  attackDamage: 1
+  lifespan: 15
 --- !u!114 &165086185287948290
 MonoBehaviour:
   m_ObjectHideFlags: 0

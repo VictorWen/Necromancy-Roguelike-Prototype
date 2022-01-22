@@ -7,6 +7,7 @@ public class EnemyController : MonoBehaviour
     [SerializeField] private EntityLedger ledger;
     [SerializeField] private ProjectileController projectilePrefab;
     [SerializeField] private GameObject soulPickup;
+    [SerializeField] private GameObject terrorPickup;
     [SerializeField] private MinionController minionPrefab;
 
     [SerializeField] private float direction = 0;
@@ -106,6 +107,11 @@ public class EnemyController : MonoBehaviour
                 // soul.transform.position = transform.position;
                 ledger.Player.AddSoulPower(10);
             }
+        }
+        else if (info.isPlayerFriendlyDamage)
+        {
+            GameObject terror = Instantiate(terrorPickup);
+            terror.transform.position = transform.position;
         }
         ledger.RemoveEnemy(this);
     }
