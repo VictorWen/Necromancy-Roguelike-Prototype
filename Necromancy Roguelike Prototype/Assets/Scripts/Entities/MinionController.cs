@@ -9,7 +9,8 @@ public class MinionController : MonoBehaviour
     [SerializeField] private float returnDistance = 4;
     [SerializeField] private float targetDistance = 2;
     [SerializeField] private float acceleration = 3;
-    [SerializeField] private float attackCooldown = 1.5f;
+    [SerializeField] private float attackCooldown = 1f;
+    [SerializeField] private int attackDamage = 1;
 
     [SerializeField] private float lifespan = 15f;
 
@@ -109,7 +110,7 @@ public class MinionController : MonoBehaviour
         }
 
         Vector3 direction = target.transform.position - transform.position;
-        if (direction.magnitude > 0.25)
+        if (direction.magnitude > 0.5)
             rigidBody.AddForce(direction.normalized * acceleration * rigidBody.mass, ForceMode2D.Impulse);
         else
         {
@@ -118,7 +119,7 @@ public class MinionController : MonoBehaviour
                 HealthScript health = target.GetComponent<HealthScript>();
                 if (health != null)
                 {
-                    health.Damage(1, DamageInfo.CreateMinionDamageInfo());
+                    health.Damage(attackDamage, DamageInfo.CreateMinionDamageInfo());
                     cooldownTimer = attackCooldown;
                 }
             }

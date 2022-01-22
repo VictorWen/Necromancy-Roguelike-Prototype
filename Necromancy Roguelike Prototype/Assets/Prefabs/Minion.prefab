@@ -100,10 +100,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ledger: {fileID: 0}
   followDistance: 1
-  returnDistance: 4
+  returnDistance: 6
   targetDistance: 2
-  acceleration: 3
-  attackCooldown: 2
+  acceleration: 1
+  attackCooldown: 1
+  attackDamage: 2
+  lifespan: 20
 --- !u!114 &165086185287948290
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -116,9 +118,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6139681c11418145a0ec4ff2584e53b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 5
-  maxHealth: 5
+  health: 8
+  maxHealth: 8
   playerHealth: 1
+  isInvulnerable: 0
 --- !u!50 &606797761982387327
 Rigidbody2D:
   serializedVersion: 4

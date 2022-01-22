@@ -28,6 +28,11 @@ public class EnemyController : MonoBehaviour
         TARGET,
     }
 
+    public void Initialize(EntityLedger ledger)
+    {
+        this.ledger = ledger;
+    }
+
     private void Start()
     {
         rigidBody = GetComponent<Rigidbody2D>();
@@ -43,7 +48,8 @@ public class EnemyController : MonoBehaviour
         if (ledger.Player != null)
         {
             Vector3 playerPosition = ledger.Player.transform.position;
-            if (Vector3.Distance(playerPosition, transform.position) <= targetingDistance)
+            float distance = Vector3.Distance(playerPosition, transform.position);
+            if (distance <= targetingDistance)
             {
                 if (state == AIState.IDLE)
                 {
@@ -63,7 +69,8 @@ public class EnemyController : MonoBehaviour
             {
                 rigidBody.AddForce(acceleration * (new Vector3(Mathf.Cos(direction), Mathf.Sin(direction))) * rigidBody.mass, ForceMode2D.Impulse);
 
-                float target_direction = Mathf.Atan2(playerPosition.y - transform.position.y, playerPosition.x - transform.position.x);
+                float noise = distance * 0.15f;
+                float target_direction = Mathf.Atan2(playerPosition.y - transform.position.y, playerPosition.x - transform.position.x) + Random.Range(-noise, noise);
                 direction = target_direction;
             }
 
@@ -95,8 +102,9 @@ public class EnemyController : MonoBehaviour
             else if (!info.isRevivalDamage)
             {
                 // Drop Soul
-                GameObject soul = Instantiate(soulPickup);
-                soul.transform.position = transform.position;
+                // GameObject soul = Instantiate(soulPickup);
+                // soul.transform.position = transform.position;
+                ledger.Player.AddSoulPower(10);
             }
         }
         ledger.RemoveEnemy(this);

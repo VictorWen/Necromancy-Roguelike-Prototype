@@ -18,6 +18,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private int bullets = 6;
     [SerializeField] private int maxBullets = 6;
     [SerializeField] private float reloadTime = 1.5f;
+    [SerializeField] private float aimSpeed = 1.5f;
 
     [SerializeField] private float dodgeTime = 0.75f;
     [SerializeField] private float dodgeCooldown = 1.5f;
@@ -105,6 +106,7 @@ public class PlayerController : MonoBehaviour
 
         healthText = GetComponentInChildren<Text>();
         health = GetComponent<HealthScript>();
+        health.OnDeath += (DamageInfo info) => CleanUpMinions();
 
         ledger.Player = this;
     }
@@ -167,7 +169,7 @@ public class PlayerController : MonoBehaviour
         if ((Input.GetMouseButton(0) || Input.GetMouseButton(1)) && aimCone.IsActive)
         {
             if (aimCone.Angle > 0)
-                aimCone.SetAngle(Mathf.Max(0, aimCone.Angle - 0.5f * Time.fixedDeltaTime));
+                aimCone.SetAngle(Mathf.Max(0, aimCone.Angle - aimSpeed * Time.fixedDeltaTime));
 
             Vector3 mousePos = Input.mousePosition;
             mousePos = Camera.main.ScreenToWorldPoint(mousePos);
@@ -229,6 +231,15 @@ public class PlayerController : MonoBehaviour
             if (reloadTimer <= 0)
                 bullets = maxBullets;
         }   
+    }
+
+    private void CleanUpMinions()
+    {
+        foreach (MinionController minion in ledger.Minions)
+        {
+            ledger.RemoveMinion(minion);
+            Destroy(minion.gameObject);
+        }
     }
 
     private void ReloadWeapon()

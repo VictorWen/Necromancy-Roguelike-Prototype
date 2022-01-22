@@ -103,11 +103,11 @@ MonoBehaviour:
   soulPickup: {fileID: 1550434480799521650, guid: 5527cb1f39957e94894edd6559ac8a57, type: 3}
   minionPrefab: {fileID: 165086185287948288, guid: 2cbc1f4c835622d4baa02ad4b67315a5, type: 3}
   direction: 0
-  acceleration: 1
+  acceleration: 0.75
   followingDistance: 1
   targetingDistance: 3
-  shootingSpeed: 2
-  projectileSpeed: 5
+  shootingSpeed: 0.75
+  projectileSpeed: 7
 --- !u!114 &5810035690109053621
 MonoBehaviour:
   m_ObjectHideFlags: 0
